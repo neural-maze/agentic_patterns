@@ -1,5 +1,5 @@
 <p align="center">
-    <img alt="logo" src="img/logo1.png" width=300 />
+    <img alt="logo" src="img/logo.png" width=300 />
     <h1 align="center">Agentic Patterns</h1>
     <h3 align="center">Implementing the agentic patterns using Groq</h3>
 </p>
