@@ -26,5 +26,7 @@ The patterns we are covering in the repository are the following:
 
 ## Reflection Pattern
 
-![alt text](reflection_pattern.png)
+<p align="center">
+    <img alt="logo" src="img/reflection_pattern.png" width=500 />
+</p>
 
