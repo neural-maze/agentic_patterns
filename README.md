@@ -13,8 +13,12 @@
 This repository contains an implementation of the 4 agentic
 patterns defined by Deeplearning.ai using Groq.
 
-**So no LangChain, no LangGraph, no LlamaIndex, no framework at all. Pure and simple API calls in Groq!!**
+<p align="center">
+    <img alt="logo" src="img/groq.png" width=200 />
+</p>
 
+
+Below, you have a description of the 4 patterns we are going to be implementing.
 
 ## Reflection Pattern
 
@@ -22,3 +26,16 @@ patterns defined by Deeplearning.ai using Groq.
     <img alt="logo" src="img/reflection_pattern.png" width=500 />
 </p>
 
+
+## Tool Use
+
+TBD
+
+
+## Planning Pattern
+
+TBD
+
+## Multiagent Collaboration Pattern
+
+TBD
