@@ -12,6 +12,7 @@ groq = "^0.9.0"
 jupyter = "^1.0.0"
 python-dotenv = "^1.0.1"
 colorama = "^0.4.6"
+types-colorama = "^0.4.15.20240311"
 
 
 [build-system]
