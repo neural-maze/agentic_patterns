@@ -1,5 +1,5 @@
 <p align="center">
-    <img alt="logo" src="img/repo_logo.png" width=300 />
+    <img alt="logo" src="img/agentic_patterns.png" width=600 />
     <h1 align="center">Agentic Patterns</h1>
     <h3 align="center">Implementing the agentic patterns using Groq</h3>
 </p>
@@ -29,13 +29,19 @@ Below, you have a description of the 4 patterns we are going to be implementing.
 
 ## Tool Use
 
-TBD
+<p align="center">
+    <img alt="logo" src="img/tool_pattern.png" width=600 />
+</p>
 
 
 ## Planning Pattern
 
-TBD
+<p align="center">
+    <img alt="logo" src="img/planning_pattern.png" width=500 />
+</p>
 
 ## Multiagent Collaboration Pattern
 
-TBD
+<p align="center">
+    <img alt="logo" src="img/multiagent_pattern.png" width=500 />
+</p>
