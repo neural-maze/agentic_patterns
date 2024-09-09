@@ -17,7 +17,7 @@ def build_prompt_structure(prompt: str, role: str) -> dict:
     return {"role": role, "content": prompt}
 
 
-def fancy_step_tracker(self, step: int, total_steps: int) -> None:
+def fancy_step_tracker(step: int, total_steps: int) -> None:
     """
     Displays a fancy step tracker for each iteration of the generation-reflection loop.
 
