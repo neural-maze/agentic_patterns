@@ -27,7 +27,8 @@ class ReflectionAgent:
     def __str__(self):
         return "Reflection Agent"
 
-    def build_prompt_structure(self, prompt: str, role: str):
+    @staticmethod
+    def build_prompt_structure(prompt: str, role: str):
         """
         Builds a structured prompt that includes the role and content.
 
@@ -57,7 +58,7 @@ class ReflectionAgent:
             .message.content
         )
         if verbose > 0:
-            print(Fore.BLUE + "\nGeneration step output: " + output)
+            print(Fore.BLUE + "\n\nGENERATION\n\n " + str(output))
 
         return output
 
@@ -78,7 +79,7 @@ class ReflectionAgent:
         )
 
         if verbose > 0:
-            print(Fore.GREEN + "\nReflection step output: " + output)
+            print(Fore.GREEN + "\n\nREFLECTION\n\n" + str(output))
 
         return output
 
@@ -91,16 +92,16 @@ class ReflectionAgent:
             total_steps (int): The total number of steps in the loop.
         """
         print(Style.BRIGHT + Fore.CYAN + f"\n{'=' * 50}")
-        print(Fore.MAGENTA + f"Step {step + 1}/{total_steps}")
+        print(Fore.MAGENTA + f"STEP {step + 1}/{total_steps}")
         print(Style.BRIGHT + Fore.CYAN + f"{'=' * 50}\n")
-        time.sleep(0.5)  # Adding a small delay for visual effect
+        time.sleep(0.5)
 
     def run(
         self,
         generation_system_prompt: str,
         reflection_system_prompt: str,
         prompt: str,
-        n_steps: int = 5,
+        n_steps: int = 3,
         verbose: int = 0,
     ):
         """_summary_
@@ -115,7 +116,10 @@ class ReflectionAgent:
 
         reflection_history = [{"role": "system", "content": reflection_system_prompt}]
 
-        for _ in range(n_steps):
+        for step in range(n_steps):
+
+            self.fancy_step_tracker(step, n_steps)
+            
             # Generate the output based on generation history
             generation = self.generate(generation_history, verbose=verbose)
 
@@ -127,6 +131,9 @@ class ReflectionAgent:
 
             # Reflect and critique the generation
             critique = self.reflect(reflection_history, verbose=verbose)
+            reflection_history.append(
+                self.build_prompt_structure(critique, "assistant")
+            )
             generation_history.append(self.build_prompt_structure(critique, "user"))
 
         return generation
