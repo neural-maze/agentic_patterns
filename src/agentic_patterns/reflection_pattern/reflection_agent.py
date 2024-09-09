@@ -112,7 +112,4 @@ class ReflectionAgent:
                 build_prompt_structure(prompt=critique, role="user")
             )
 
-        # Final generation
-        generation = self.generate(generation_history, verbose=verbose)
-
         return generation
