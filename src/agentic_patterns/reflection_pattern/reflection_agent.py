@@ -1,15 +1,11 @@
-"""
-This module provides the implementation of a ReflectionAgent class, 
-which generates responses based on a provided prompt and reflects 
-on the generated content to improve or critique the responses. 
-"""
-
-import time
-
-from colorama import Fore, Style
+from colorama import Fore
 from dotenv import load_dotenv
 from groq import Groq
 
+from agentic_patterns.reflection_pattern.utils import (
+    build_prompt_structure,
+    fancy_step_tracker,
+)
 
 load_dotenv()
 
@@ -26,20 +22,6 @@ class ReflectionAgent:
 
     def __str__(self):
         return "Reflection Agent"
-
-    @staticmethod
-    def build_prompt_structure(prompt: str, role: str):
-        """
-        Builds a structured prompt that includes the role and content.
-
-        Args:
-            prompt (str): The actual content of the prompt.
-            role (str): The role of the speaker (e.g., user, assistant).
-
-        Returns:
-            dict: A dictionary representing the structured prompt.
-        """
-        return {"role": role, "content": prompt}
 
     def generate(self, generation_history: list, verbose: int = 0):
         """
@@ -83,57 +65,54 @@ class ReflectionAgent:
 
         return output
 
-    def fancy_step_tracker(self, step: int, total_steps: int):
-        """
-        Displays a fancy step tracker for each iteration of the generation-reflection loop.
-
-        Args:
-            step (int): The current step in the loop.
-            total_steps (int): The total number of steps in the loop.
-        """
-        print(Style.BRIGHT + Fore.CYAN + f"\n{'=' * 50}")
-        print(Fore.MAGENTA + f"STEP {step + 1}/{total_steps}")
-        print(Style.BRIGHT + Fore.CYAN + f"{'=' * 50}\n")
-        time.sleep(0.5)
-
     def run(
         self,
         generation_system_prompt: str,
         reflection_system_prompt: str,
-        prompt: str,
+        user_prompt: str,
         n_steps: int = 3,
         verbose: int = 0,
-    ):
+    ) -> str:
         """_summary_
 
         Args:
             generation_system_prompt (str): _description_
             reflection_system_promp (str): _description_
-            prompt (str): _description_
+            user_prompt (str): _description_
         """
-        generation_history = [{"role": "system", "content": generation_system_prompt}]
-        generation_history.append({"role": "user", "content": prompt})
-
-        reflection_history = [{"role": "system", "content": reflection_system_prompt}]
+        generation_history = [
+            build_prompt_structure(prompt=generation_system_prompt, role="system"),
+            build_prompt_structure(prompt=user_prompt, role="user"),
+        ]
+        reflection_history = [
+            build_prompt_structure(prompt=reflection_system_prompt, role="system")
+        ]
 
         for step in range(n_steps):
 
-            self.fancy_step_tracker(step, n_steps)
-            
+            fancy_step_tracker(step, n_steps)
+
             # Generate the output based on generation history
             generation = self.generate(generation_history, verbose=verbose)
 
             # Update histories
             generation_history.append(
-                self.build_prompt_structure(generation, "assistant")
+                build_prompt_structure(prompt=generation, role="assistant")
             )
-            reflection_history.append(self.build_prompt_structure(generation, "user"))
+            reflection_history.append(
+                build_prompt_structure(prompt=generation, role="user")
+            )
 
             # Reflect and critique the generation
             critique = self.reflect(reflection_history, verbose=verbose)
             reflection_history.append(
-                self.build_prompt_structure(critique, "assistant")
+                build_prompt_structure(prompt=critique, role="assistant")
             )
-            generation_history.append(self.build_prompt_structure(critique, "user"))
+            generation_history.append(
+                build_prompt_structure(prompt=critique, role="user")
+            )
+
+        # Final generation
+        generation = self.generate(generation_history, verbose=verbose)
 
         return generation
