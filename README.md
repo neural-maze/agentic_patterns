@@ -57,7 +57,10 @@ In practice, you can build tools for whatever you want (at the end of the day th
 
 Want to see this pattern in action?
 
-TBD
+- Check the [notebook](notebooks/tool_pattern.ipynb) for a step by step explanation
+- Check the [`ToolAgent`](src/agentic_patterns/tool_pattern/tool_agent.py) for a complete Python implementation
+- Check the [`Tool`](src/agentic_patterns/tool_pattern/tool.py) for understanding how Tools work under the hood.
+
 
 ---
 
