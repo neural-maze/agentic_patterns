@@ -1,17 +1,15 @@
 import json
 import re
-from typing import List
-from typing import Union
 
 from colorama import Fore
 from dotenv import load_dotenv
 from groq import Groq
 
 from agentic_patterns.tool_pattern.tool import Tool
-from agentic_patterns.tool_pattern.utils import validate_arguments
-from agentic_patterns.utils import (
-    build_prompt_structure,
-)
+from agentic_patterns.tool_pattern.tool import validate_arguments
+from agentic_patterns.utils.completions import build_prompt_structure
+from agentic_patterns.utils.completions import ChatHistory
+from agentic_patterns.utils.completions import update_chat_history
 
 load_dotenv()
 
@@ -36,9 +34,21 @@ Here are the available tools:
 
 
 class ToolAgent:
+    """
+    The ToolAgent class represents an agent that can interact with a language model and use tools
+    to assist with user queries. It generates function calls based on user input, validates arguments,
+    and runs the respective tools.
+
+    Attributes:
+        tools (Tool | list[Tool]): A list of tools available to the agent.
+        model (str): The model to be used for generating tool calls and responses.
+        client (Groq): The Groq client used to interact with the language model.
+        tools_dict (dict): A dictionary mapping tool names to their corresponding Tool objects.
+    """
+
     def __init__(
         self,
-        tools: Union[Tool, List[Tool]],
+        tools: Tool | list[Tool],
         model: str = "llama3-groq-70b-8192-tool-use-preview",
     ) -> None:
         self.client = Groq()
@@ -46,13 +56,28 @@ class ToolAgent:
         self.tools = tools if isinstance(tools, list) else [tools]
         self.tools_dict = {tool.name: tool for tool in self.tools}
 
-    def add_tool_signatures(self):
+    def add_tool_signatures(self) -> str:
+        """
+        Collects the function signatures of all available tools.
+
+        Returns:
+            str: A concatenated string of all tool function signatures in JSON format.
+        """
         tools_info = ""
         for tool in self.tools:
             tools_info += tool.fn_signature
         return tools_info
 
-    def parse_tool_call_str(self, tool_call_str: str):
+    def parse_tool_call_str(self, tool_call_str: str) -> str | dict:
+        """
+        Parses a tool call string by removing the XML tags and converting it into a JSON object.
+
+        Args:
+            tool_call_str (str): The tool call string containing XML tags.
+
+        Returns:
+            str | dict : The parsed tool call as a dictionary, or an error message if parsing fails.
+        """
         pattern = r"</?tool_call>"
         clean_tags = re.sub(pattern, "", tool_call_str)
 
@@ -69,16 +94,27 @@ class ToolAgent:
         self,
         user_msg: str,
     ) -> str:
+        """
+        Handles the full process of interacting with the language model and executing a tool based on user input.
 
+        Args:
+            user_msg (str): The user's message that prompts the tool agent to act.
+
+        Returns:
+            str: The final output after executing the tool and generating a response from the model.
+        """
         user_prompt = build_prompt_structure(prompt=user_msg, role="user")
 
-        tool_chat_history: List = [
-            build_prompt_structure(
-                prompt=TOOL_SYSTEM_PROMPT % self.add_tool_signatures(), role="system"
-            ),
-            user_prompt,
-        ]
-        agent_chat_history: List = [user_prompt]
+        tool_chat_history = ChatHistory(
+            [
+                build_prompt_structure(
+                    prompt=TOOL_SYSTEM_PROMPT % self.add_tool_signatures(),
+                    role="system",
+                ),
+                user_prompt,
+            ]
+        )
+        agent_chat_history = ChatHistory([user_prompt])
 
         tool_call_str = (
             self.client.chat.completions.create(
@@ -102,9 +138,7 @@ class ToolAgent:
             result = tool.run(**tool_call["arguments"])
             print(Fore.GREEN + f"\nTool result: \n\n {result}")
 
-            agent_chat_history.append(
-                build_prompt_structure(prompt=f'f"Observation: {result}"', role="user")
-            )
+            update_chat_history(agent_chat_history, f'f"Observation: {result}"', "user")
 
         output = (
             self.client.chat.completions.create(

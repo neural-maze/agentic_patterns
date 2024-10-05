@@ -1,6 +1,3 @@
-import time
-
-
 def build_prompt_structure(prompt: str, role: str) -> dict:
     """
     Builds a structured prompt that includes the role and content.
