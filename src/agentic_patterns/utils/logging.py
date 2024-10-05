@@ -1,20 +1,7 @@
 import time
 
-from colorama import Fore, Style
-
-
-def build_prompt_structure(prompt: str, role: str) -> dict:
-    """
-    Builds a structured prompt that includes the role and content.
-
-    Args:
-        prompt (str): The actual content of the prompt.
-        role (str): The role of the speaker (e.g., user, assistant).
-
-    Returns:
-        dict: A dictionary representing the structured prompt.
-    """
-    return {"role": role, "content": prompt}
+from colorama import Fore
+from colorama import Style
 
 
 def fancy_step_tracker(step: int, total_steps: int) -> None:

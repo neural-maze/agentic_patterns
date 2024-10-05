@@ -14,6 +14,11 @@ python-dotenv = "^1.0.1"
 colorama = "^0.4.6"
 types-colorama = "^0.4.15.20240311"
 
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^3.8.0"
+black = "^24.8.0"
+reorder-python-imports = "^3.13.0"
+pre-commit-hooks = "^4.6.0"
 
 [build-system]
 requires = ["poetry-core"]
