@@ -4,21 +4,19 @@
     <h3 align="center">Implementing the agentic patterns using Groq</h3>
 </p>
 
+<p align="center">
+    <img alt="logo" src="img/groq.png" width=200 />
+</p>
 
 > No LangChain, no LangGraph, no LlamaIndex, no CrewAI. Pure and simple API calls to Groq.
 
 
 ## Introduction
 
-This repository contains an implementation of the 4 agentic
-patterns defined by Deeplearning.ai using Groq.
+This repository contains an implementation of the 4 agentic patterns as defined by Andrew Ng in his DeepLearning.AI [blog article series](https://www.deeplearning.ai/the-batch/how-agents-can-improve-llm-performance/?ref=dl-staging-website.ghost.io).
 
-<p align="center">
-    <img alt="logo" src="img/groq.png" width=200 />
-</p>
+Here’s a description of the four patterns we will be implementing.
 
-
-Below, you have a description of the 4 patterns we are going to be implementing.
 
 ## The 4 Agentic patterns
 
@@ -34,10 +32,17 @@ surprising performance gains for the LLM response.
 It allows the LLM to **reflect on its results**, suggesting
 modifications, additions, improvements in the writing style, etc.
 
-Want to see this pattern in action?
+Want to see how this pattern is implemented? 💻
 
 - Check the [notebook](notebooks/reflection_pattern.ipynb) for a step by step explanation
 - Check the [`ReflectionAgent`](src/agentic_patterns/reflection_pattern/reflection_agent.py) for a complete Python implementation
+
+
+Take a look at the YouTube video! 👇
+
+[![Watch the video](https://img.youtube.com/vi/0sAVI8bQdRc/0.jpg)](https://www.youtube.com/watch?v=0sAVI8bQdRc&t=3s&ab_channel=TheNeuralMaze)
+
+
 
 ---
 
@@ -55,12 +60,15 @@ In practice, you can build tools for whatever you want (at the end of the day th
 
 **Tools** are the **secret sauce of agentic applications** and the possibilities are endless! 🥫
 
-Want to see this pattern in action?
+Want to see how this pattern is implemented? 💻
 
 - Check the [notebook](notebooks/tool_pattern.ipynb) for a step by step explanation
 - Check the [`ToolAgent`](src/agentic_patterns/tool_pattern/tool_agent.py) for a complete Python implementation
 - Check the [`Tool`](src/agentic_patterns/tool_pattern/tool.py) for understanding how Tools work under the hood.
 
+Take a look at the YouTube video! 👇
+
+[![Watch the video](https://img.youtube.com/vi/ApoDzZP8_ck/0.jpg)](https://www.youtube.com/watch?v=ApoDzZP8_ck&t=53s&ab_channel=TheNeuralMaze)
 
 ---
 
@@ -79,7 +87,7 @@ The most paradigmatic example of the planning pattern is the **ReAct** technique
 
 Want to see this pattern in action?
 
-TBD 
+TBD
 
 ---
 
