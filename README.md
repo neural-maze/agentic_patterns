@@ -40,7 +40,7 @@ Want to see how this pattern is implemented? 💻
 
 Take a look at the YouTube video! 👇
 
-[![Watch the video](https://img.youtube.com/vi/0sAVI8bQdRc/0.jpg)](https://www.youtube.com/watch?v=0sAVI8bQdRc&t=3s&ab_channel=TheNeuralMaze)
+[![Watch the video](https://img.youtube.com/vi/0sAVI8bQdRc/0.jpg)](https://www.youtube.com/watch?v=0sAVI8bQdRc)
 
 
 
@@ -68,7 +68,7 @@ Want to see how this pattern is implemented? 💻
 
 Take a look at the YouTube video! 👇
 
-[![Watch the video](https://img.youtube.com/vi/ApoDzZP8_ck/0.jpg)](https://www.youtube.com/watch?v=ApoDzZP8_ck&t=53s&ab_channel=TheNeuralMaze)
+[![Watch the video](https://img.youtube.com/vi/ApoDzZP8_ck/0.jpg)](https://www.youtube.com/watch?v=ApoDzZP8_ck)
 
 ---
 
