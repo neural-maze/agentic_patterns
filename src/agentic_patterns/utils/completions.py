@@ -1,4 +1,20 @@
-def build_prompt_structure(prompt: str, role: str) -> dict:
+def completions_create(client, messages: list, model: str) -> str:
+    """
+    Sends a request to the client's `completions.create` method to interact with the language model.
+
+    Args:
+        client (Groq): The Groq client object
+        messages (list[dict]): A list of message objects containing chat history for the model.
+        model (str): The model to use for generating tool calls and responses.
+
+    Returns:
+        str: The content of the model's response.
+    """
+    response = client.chat.completions.create(messages=messages, model=model)
+    return str(response.choices[0].message.content)
+
+
+def build_prompt_structure(prompt: str, role: str, tag: str = "") -> dict:
     """
     Builds a structured prompt that includes the role and content.
 
@@ -9,6 +25,8 @@ def build_prompt_structure(prompt: str, role: str) -> dict:
     Returns:
         dict: A dictionary representing the structured prompt.
     """
+    if tag:
+        prompt = f"<{tag}>{prompt}</{tag}>"
     return {"role": role, "content": prompt}
 
 

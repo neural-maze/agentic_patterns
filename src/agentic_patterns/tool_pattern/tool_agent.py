@@ -9,7 +9,9 @@ from agentic_patterns.tool_pattern.tool import Tool
 from agentic_patterns.tool_pattern.tool import validate_arguments
 from agentic_patterns.utils.completions import build_prompt_structure
 from agentic_patterns.utils.completions import ChatHistory
+from agentic_patterns.utils.completions import completions_create
 from agentic_patterns.utils.completions import update_chat_history
+from agentic_patterns.utils.extraction import extract_tag_content
 
 load_dotenv()
 
@@ -22,7 +24,7 @@ For each function call return a json object with function name and arguments wit
 XML tags as follows:
 
 <tool_call>
-{"name": <function-name>,"arguments": <args-dict>}
+{"name": <function-name>,"arguments": <args-dict>,  "id": <monotonically-increasing-id>}
 </tool_call>
 
 Here are the available tools:
@@ -63,32 +65,39 @@ class ToolAgent:
         Returns:
             str: A concatenated string of all tool function signatures in JSON format.
         """
-        tools_info = ""
-        for tool in self.tools:
-            tools_info += tool.fn_signature
-        return tools_info
+        return "".join([tool.fn_signature for tool in self.tools])
 
-    def parse_tool_call_str(self, tool_call_str: str) -> str | dict:
+    def process_tool_calls(self, tool_calls_content: list) -> dict:
         """
-        Parses a tool call string by removing the XML tags and converting it into a JSON object.
+        Processes each tool call, validates arguments, executes the tools, and collects results.
 
         Args:
-            tool_call_str (str): The tool call string containing XML tags.
+            tool_calls_content (list): List of strings, each representing a tool call in JSON format.
 
         Returns:
-            str | dict : The parsed tool call as a dictionary, or an error message if parsing fails.
+            dict: A dictionary where the keys are tool call IDs and values are the results from the tools.
         """
-        pattern = r"</?tool_call>"
-        clean_tags = re.sub(pattern, "", tool_call_str)
+        observations = {}
+        for tool_call_str in tool_calls_content:
+            tool_call = json.loads(tool_call_str)
+            tool_name = tool_call["name"]
+            tool = self.tools_dict[tool_name]
 
-        try:
-            tool_call_json = json.loads(clean_tags)
-            return tool_call_json
-        except json.JSONDecodeError:
-            return clean_tags
-        except Exception as e:
-            print(f"Unexpected error: {e}")
-            return "There was some error parsing the Tool's output"
+            print(Fore.GREEN + f"\nUsing Tool: {tool_name}")
+
+            # Validate and execute the tool call
+            validated_tool_call = validate_arguments(
+                tool_call, json.loads(tool.fn_signature)
+            )
+            print(Fore.GREEN + f"\nTool call dict: \n{validated_tool_call}")
+
+            result = tool.run(**validated_tool_call["arguments"])
+            print(Fore.GREEN + f"\nTool result: \n{result}")
+
+            # Store the result using the tool call ID
+            observations[validated_tool_call["id"]] = result
+
+        return observations
 
     def run(
         self,
@@ -116,36 +125,15 @@ class ToolAgent:
         )
         agent_chat_history = ChatHistory([user_prompt])
 
-        tool_call_str = (
-            self.client.chat.completions.create(
-                messages=tool_chat_history, model=self.model
-            )
-            .choices[0]
-            .message.content
+        tool_call_response = completions_create(
+            self.client, messages=tool_chat_history, model=self.model
         )
+        tool_calls = extract_tag_content(str(tool_call_response), "tool_call")
 
-        tool_call = self.parse_tool_call_str(str(tool_call_str))
-
-        if isinstance(tool_call, dict):
-            tool_name = tool_call["name"]
-            tool = self.tools_dict[tool_name]
-
-            print(Fore.GREEN + f"\nUsing Tool: {tool_name}")
-
-            tool_call = validate_arguments(tool_call, json.loads(tool.fn_signature))
-            print(Fore.GREEN + f"\nTool call dict: \n {tool_call}")
-
-            result = tool.run(**tool_call["arguments"])
-            print(Fore.GREEN + f"\nTool result: \n\n {result}")
-
-            update_chat_history(agent_chat_history, f'f"Observation: {result}"', "user")
-
-        output = (
-            self.client.chat.completions.create(
-                messages=agent_chat_history, model=self.model
+        if tool_calls.found:
+            observations = self.process_tool_calls(tool_calls.content)
+            update_chat_history(
+                agent_chat_history, f'f"Observation: {observations}"', "user"
             )
-            .choices[0]
-            .message.content
-        )
 
-        return str(output)
+        return completions_create(self.client, agent_chat_history, self.model)

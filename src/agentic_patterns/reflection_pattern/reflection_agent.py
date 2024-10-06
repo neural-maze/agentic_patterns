@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 from groq import Groq
 
 from agentic_patterns.utils.completions import build_prompt_structure
+from agentic_patterns.utils.completions import completions_create
 from agentic_patterns.utils.completions import FixedFirstChatHistory
 from agentic_patterns.utils.completions import update_chat_history
 from agentic_patterns.utils.logging import fancy_step_tracker
@@ -55,11 +56,7 @@ class ReflectionAgent:
         Returns:
             str: The model-generated response.
         """
-        output = (
-            self.client.chat.completions.create(messages=history, model=self.model)
-            .choices[0]
-            .message.content
-        )
+        output = completions_create(self.client, history, self.model)
 
         if verbose > 0:
             print(log_color, f"\n\n{log_title}\n\n", output)

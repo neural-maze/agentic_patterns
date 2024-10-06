@@ -81,7 +81,7 @@ Take a look at the YouTube video! 👇
 So, we've seen agents capable of reflecting and using tools to access the outside world. But ... **what about planning**,
 i.e. deciding what sequence of steps to follow to accomplish a large task?
 
-That is exactly what the Plannin Pattern provided; ways for the LLM to break a task into **smaller, more easily accomplished subgoals** without losing track of the end goal.
+That is exactly what the Planning Pattern provides; ways for the LLM to break a task into **smaller, more easily accomplished subgoals** without losing track of the end goal.
 
 The most paradigmatic example of the planning pattern is the **ReAct** technique, displayed in the diagram above.
 
