@@ -85,9 +85,12 @@ That is exactly what the Planning Pattern provides; ways for the LLM to break a 
 
 The most paradigmatic example of the planning pattern is the **ReAct** technique, displayed in the diagram above.
 
-Want to see this pattern in action?
+Want to see how this pattern is implemented? 💻
 
-TBD
+- Check the [notebook](notebooks/planning_pattern.ipynb) for a step by step explanation
+- Check the [`ReactAgent`](src/agentic_patterns/planning_pattern/react_agent.py) for a complete Python implementation
+
+Take a look at the YouTube video! 👇
 
 ---
 
