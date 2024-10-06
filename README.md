@@ -92,6 +92,9 @@ Want to see how this pattern is implemented? 💻
 
 Take a look at the YouTube video! 👇
 
+[![Watch the video](https://img.youtube.com/vi/4xkC069wrw8/0.jpg)](https://www.youtube.com/watch?v=4xkC069wrw8)
+
+
 ---
 
 ### Multiagent Pattern 🧑🏽‍🤝‍🧑🏻
