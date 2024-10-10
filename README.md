@@ -113,3 +113,6 @@ TBD
 
 ---
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=neural-maze/agentic_patterns&type=Date)](https://star-history.com/#neural-maze/agentic_patterns&Date)
