@@ -7,30 +7,73 @@ from agentic_patterns.utils.logging import fancy_print
 
 
 class Crew:
-    # Class-level variable to track the active Crew context
+    """
+    A class representing a crew of agents working together.
+
+    This class manages a group of agents, their dependencies, and provides methods
+    for running the agents in a topologically sorted order.
+
+    Attributes:
+        current_crew (Crew): Class-level variable to track the active Crew context.
+        agents (list): A list of agents in the crew.
+    """
+
     current_crew = None
 
     def __init__(self):
         self.agents = []
 
     def __enter__(self):
-        # Set this crew as the current active context
+        """
+        Enters the context manager, setting this crew as the current active context.
+
+        Returns:
+            Crew: The current Crew instance.
+        """
         Crew.current_crew = self
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        # Clear the active context when exiting the block
+        """
+        Exits the context manager, clearing the active context.
+
+        Args:
+            exc_type: The exception type, if an exception was raised.
+            exc_val: The exception value, if an exception was raised.
+            exc_tb: The traceback, if an exception was raised.
+        """
         Crew.current_crew = None
 
     def add_agent(self, agent):
+        """
+        Adds an agent to the crew.
+
+        Args:
+            agent: The agent to be added to the crew.
+        """
         self.agents.append(agent)
 
     @staticmethod
     def register_agent(agent):
+        """
+        Registers an agent with the current active crew context.
+
+        Args:
+            agent: The agent to be registered.
+        """
         if Crew.current_crew is not None:
             Crew.current_crew.add_agent(agent)
 
     def topological_sort(self):
+        """
+        Performs a topological sort of the agents based on their dependencies.
+
+        Returns:
+            list: A list of agents sorted in topological order.
+
+        Raises:
+            ValueError: If there's a circular dependency among the agents.
+        """
         in_degree = {agent: len(agent.dependencies) for agent in self.agents}
         queue = deque([agent for agent in self.agents if in_degree[agent] == 0])
 
@@ -47,20 +90,17 @@ class Crew:
 
         if len(sorted_agents) != len(self.agents):
             raise ValueError(
-                "There's a circle of dependencies on the agents! Topological sort is not possible"
+                "Circular dependencies detected among agents, preventing a valid topological sort"
             )
 
         return sorted_agents
 
     def plot(self):
         """
-        Plots the Directed Acyclic Graph (DAG) of agents in the given crew using Graphviz.
-
-        Parameters:
-        crew (Crew): The crew instance containing the registered agents.
+        Plots the Directed Acyclic Graph (DAG) of agents in the crew using Graphviz.
 
         Returns:
-        Digraph: A Graphviz Digraph object representing the agent dependencies.
+            Digraph: A Graphviz Digraph object representing the agent dependencies.
         """
         dot = Digraph(format="png")  # Set format to PNG for inline display
 
@@ -72,6 +112,11 @@ class Crew:
         return dot
 
     def run(self):
+        """
+        Runs all agents in the crew in topologically sorted order.
+
+        This method executes each agent's run method and prints the results.
+        """
         sorted_agents = self.topological_sort()
         for agent in sorted_agents:
             fancy_print(f"RUNNING AGENT: {agent}")
