@@ -15,9 +15,11 @@ from agentic_patterns.utils.extraction import extract_tag_content
 
 load_dotenv()
 
+BASE_SYSTEM_PROMPT = ""
+
 
 REACT_SYSTEM_PROMPT = """
-You are a function calling AI model. You operate by running a loop with the following steps: Thought, Action, Observation.
+You operate by running a loop with the following steps: Thought, Action, Observation.
 You are provided with function signatures within <tools></tools> XML tags.
 You may call one or more functions to assist with the user query. Don' make assumptions about what values to plug
 into functions. Pay special attention to the properties 'types'. You should use those types as in a Python dict.
@@ -71,9 +73,11 @@ class ReactAgent:
         self,
         tools: Tool | list[Tool],
         model: str = "llama-3.1-70b-versatile",
+        system_prompt: str = BASE_SYSTEM_PROMPT,
     ) -> None:
         self.client = Groq()
         self.model = model
+        self.system_prompt = system_prompt
         self.tools = tools if isinstance(tools, list) else [tools]
         self.tools_dict = {tool.name: tool for tool in self.tools}
 
@@ -138,35 +142,41 @@ class ReactAgent:
         user_prompt = build_prompt_structure(
             prompt=user_msg, role="user", tag="question"
         )
+        if self.tools:
+            self.system_prompt += (
+                "\n" + REACT_SYSTEM_PROMPT % self.add_tool_signatures()
+            )
 
         chat_history = ChatHistory(
             [
                 build_prompt_structure(
-                    prompt=REACT_SYSTEM_PROMPT % self.add_tool_signatures(),
+                    prompt=self.system_prompt,
                     role="system",
                 ),
                 user_prompt,
             ]
         )
 
-        for _ in range(max_rounds):
+        if self.tools:
+            # Run the ReAct loop for max_rounds
+            for _ in range(max_rounds):
 
-            completion = completions_create(self.client, chat_history, self.model)
+                completion = completions_create(self.client, chat_history, self.model)
 
-            response = extract_tag_content(str(completion), "response")
-            if response.found:
-                return response.content[0]
+                response = extract_tag_content(str(completion), "response")
+                if response.found:
+                    return response.content[0]
 
-            thought = extract_tag_content(str(completion), "thought")
-            tool_calls = extract_tag_content(str(completion), "tool_call")
+                thought = extract_tag_content(str(completion), "thought")
+                tool_calls = extract_tag_content(str(completion), "tool_call")
 
-            update_chat_history(chat_history, completion, "assistant")
+                update_chat_history(chat_history, completion, "assistant")
 
-            print(Fore.MAGENTA + f"\nThought: {thought.content[0]}")
+                print(Fore.MAGENTA + f"\nThought: {thought.content[0]}")
 
-            if tool_calls.found:
-                observations = self.process_tool_calls(tool_calls.content)
-                print(Fore.BLUE + f"\nObservations: {observations}")
-                update_chat_history(chat_history, f"{observations}", "user")
+                if tool_calls.found:
+                    observations = self.process_tool_calls(tool_calls.content)
+                    print(Fore.BLUE + f"\nObservations: {observations}")
+                    update_chat_history(chat_history, f"{observations}", "user")
 
         return completions_create(self.client, chat_history, self.model)

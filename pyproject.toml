@@ -13,6 +13,7 @@ jupyter = "^1.0.0"
 python-dotenv = "^1.0.1"
 colorama = "^0.4.6"
 types-colorama = "^0.4.15.20240311"
+graphviz = "^0.20.3"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.8.0"
