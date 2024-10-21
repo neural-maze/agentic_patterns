@@ -67,6 +67,20 @@ class Agent:
             other (Agent): The agent that depends on this agent.
         """
         self.add_dependent(other)
+        return other  # Allow chaining
+
+    def __lshift__(self, other):
+        """
+        Defines the '<<' operator to indicate agent dependency in reverse.
+
+        Args:
+            other (Agent): The agent that this agent depends on.
+
+        Returns:
+            Agent: The `other` agent to allow for chaining.
+        """
+        self.add_dependency(other)
+        return other  # Allow chaining
 
     def __rrshift__(self, other):
         """
@@ -76,6 +90,21 @@ class Agent:
             other (Agent): The agent that this agent depends on.
         """
         self.add_dependency(other)
+        return self  # Allow chaining
+
+    def __rlshift__(self, other):
+        """
+        Defines the '<<' operator when evaluated from right to left.
+        This operator is used to indicate agent dependency in the normal order.
+
+        Args:
+            other (Agent): The agent that depends on this agent.
+
+        Returns:
+            Agent: The current agent (self) to allow for chaining.
+        """
+        self.add_dependent(other)
+        return self  # Allow chaining
 
     def add_dependency(self, other):
         """
