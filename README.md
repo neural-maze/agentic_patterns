@@ -107,10 +107,17 @@ You may have heard about frameworks like crewAI or AutoGen, which allow you to c
 
 These frameworks implement different variations of the multi-agent pattern, in which tasks are divided into **smaller subtasks executed by different roles** (e.g. one agent can be a software engineer, another a project manager, etc.)
 
-Want to see this pattern in action?
+Want to see how this pattern is implemented? 💻
 
-TBD
+- Check the [notebook](notebooks/multiagent_pattern.ipynb) for a step by step explanation
+- Check the [`Agent`](src/agentic_patterns/multiagent_pattern/agent.py) to see how to implement
+an `Agent`, member of the `Crew`.
+- Check the [`Crew`](src/agentic_patterns/multiagent_pattern/crew.py) to see how to implement
+the `Crew`
 
+Take a look at the YouTube video! 👇
+
+[![Watch the video](https://img.youtube.com/vi/os22Q7nEXPA/0.jpg)](https://www.youtube.com/watch?v=os22Q7nEXPA)
 ---
 
 ## Star History
