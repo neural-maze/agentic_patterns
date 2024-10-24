@@ -10,6 +10,20 @@
 
 > No LangChain, no LangGraph, no LlamaIndex, no CrewAI. Pure and simple API calls to Groq.
 
+## Table of Contents
+
+- [1. Introduction](#introduction)
+  - [1.1 Reflection Pattern](#reflection-pattern-)
+  - [1.2 Tool Pattern](#tool-pattern--)
+  - [1.3 Planning Pattern](#planning-pattern-)
+  - [1.4 Multiagent Pattern](#multiagent-pattern-)
+
+- [2. The 4 Agentic Patterns](#the-4-agentic-patterns)
+
+- [3. Install & Usage](#install--usage)
+- [4. Recommended Workflow](#recommended-workflow)
+- [5. Star History](#star-history)
+
 
 ## Introduction
 
@@ -119,6 +133,264 @@ Take a look at the YouTube video! 👇
 
 [![Watch the video](https://img.youtube.com/vi/os22Q7nEXPA/0.jpg)](https://www.youtube.com/watch?v=os22Q7nEXPA)
 ---
+
+## Install & Usage
+
+If you take a look at any of the notebooks in the [notebooks/](notebooks) folder you'll see some helper methods and classes being imported from this library: `agentic-patterns`.
+
+This is the library implemented in the [src/](src) folder, and contains a full implementation of the 4 patterns and related helper methods.
+
+To install this library, you have two options:
+
+ 1. Use [Poetry](https://python-poetry.org/):
+
+```
+poetry install
+```
+
+2. Use pip (I've created a [Python package in Pypi](https://pypi.org/project/agentic-patterns/))
+
+```sh
+pip install -U agentic-patterns
+```
+
+Once you have the library installed, you can start playing with the 4 patterns implementation (I'll encourage you to take a look at the code, to fully understand what is happening under the  hood).
+
+Let's see an example of how to put the 4 patterns into practise.
+
+### Example of Reflection Pattern
+
+Here is an example of how to use a Reflection Agent.
+
+```python
+from agentic_patterns import ReflectionAgent
+
+agent = ReflectionAgent()
+
+generation_system_prompt = "You are a Python programmer tasked with generating high quality Python code"
+
+reflection_system_prompt = "You are Andrej Karpathy, an experienced computer scientist"
+
+user_msg = "Generate a Python implementation of the Merge Sort algorithm"
+
+
+final_response = agent.run(
+    user_msg=user_msg,
+    generation_system_prompt=generation_system_prompt,
+    reflection_system_prompt=reflection_system_prompt,
+    n_steps=10,
+    verbose=1,
+)
+
+print(final_response)
+```
+
+### Example of Tool Pattern
+
+An example of how to create a custom tool and bind it to a Tool Agent.
+
+First, let's create the tool. In this case, I'll be creating a tool for interacting with Hacker News. To define a tool, we just need to decorate the Python function with the `@tool`decorator.
+
+```python
+import json
+import requests
+from agentic_patterns.tool_pattern.tool import tool
+from agentic_patterns.tool_pattern.tool_agent import ToolAgent
+
+@tool
+def fetch_top_hacker_news_stories(top_n: int):
+    """
+    Fetch the top stories from Hacker News.
+
+    This function retrieves the top `top_n` stories from Hacker News using the Hacker News API.
+    Each story contains the title, URL, score, author, and time of submission. The data is fetched
+    from the official Firebase Hacker News API, which returns story details in JSON format.
+
+    Args:
+        top_n (int): The number of top stories to retrieve.
+    """
+    top_stories_url = 'https://hacker-news.firebaseio.com/v0/topstories.json'
+
+    try:
+        response = requests.get(top_stories_url)
+        response.raise_for_status()  # Check for HTTP errors
+
+        # Get the top story IDs
+        top_story_ids = response.json()[:top_n]
+
+        top_stories = []
+
+        # For each story ID, fetch the story details
+        for story_id in top_story_ids:
+            story_url = f'https://hacker-news.firebaseio.com/v0/item/{story_id}.json'
+            story_response = requests.get(story_url)
+            story_response.raise_for_status()  # Check for HTTP errors
+            story_data = story_response.json()
+
+            # Append the story title and URL (or other relevant info) to the list
+            top_stories.append({
+                'title': story_data.get('title', 'No title'),
+                'url': story_data.get('url', 'No URL available'),
+            })
+
+        return json.dumps(top_stories)
+
+    except requests.exceptions.RequestException as e:
+        print(f"An error occurred: {e}")
+        return []
+```
+
+Next, let's define the Agent.
+
+```python
+tool_agent = ToolAgent(tools=[fetch_top_hacker_news_stories])
+
+output = tool_agent.run(user_msg="Tell me the top 5 Hacker News stories right now")
+
+print(output)
+```
+
+### Example of Planning Pattern
+
+As a paradigmatic example of the Planning Pattern, `agentic-patterns` offers an implementation of a ReAct Agent.
+
+The `ReactAgent` is an evolution of the `ToolAgent`, extending its planning and reasoning capabilities.
+
+As we did before, we'll begin by defining the tools. In this case, I'll create three.
+
+```python
+@tool
+def sum_two_elements(a: int, b: int) -> int:
+    """
+    Computes the sum of two integers.
+
+    Args:
+        a (int): The first integer to be summed.
+        b (int): The second integer to be summed.
+
+    Returns:
+        int: The sum of `a` and `b`.
+    """
+    return a + b
+
+
+@tool
+def multiply_two_elements(a: int, b: int) -> int:
+    """
+    Multiplies two integers.
+
+    Args:
+        a (int): The first integer to multiply.
+        b (int): The second integer to multiply.
+
+    Returns:
+        int: The product of `a` and `b`.
+    """
+    return a * b
+
+@tool
+def compute_log(x: int) -> float | str:
+    """
+    Computes the logarithm of an integer `x` with an optional base.
+
+    Args:
+        x (int): The integer value for which the logarithm is computed. Must be greater than 0.
+
+    Returns:
+        float: The logarithm of `x` to the specified `base`.
+    """
+    if x <= 0:
+        return "Logarithm is undefined for values less than or equal to 0."
+
+    return math.log(x)
+```
+
+Now, let's create the agent.
+
+```python
+from agentic_patterns.planning_pattern.react_agent import ReactAgent
+
+agent = ReactAgent(tools=[sum_two_elements, multiply_two_elements, compute_log])
+
+agent.run(user_msg="I want to calculate the sum of 1234 and 5678 and multiply the result by 5. Then, I want to take the logarithm of this result")
+```
+
+### Example of MultiAgent Pattern
+
+For the Multiagent Pattern, I decided to use two [CrewAI](https://www.crewai.com/)'s abstractions: the Agent and the Crew.
+
+Additionally, I've also borrow some ideas from Airflow, defining the dependency between agents using the `>>` operator.
+
+Let's see an example:
+
+```python
+from agentic_patterns.multiagent_pattern.crew import Crew
+
+
+with Crew() as crew:
+    agent_1 = Agent(
+        name="Poet Agent",
+        backstory="You are a well-known poet, who enjoys creating high quality poetry.",
+        task_description="Write a poem about the meaning of life",
+        task_expected_output="Just output the poem, without any title or introductory sentences",
+    )
+
+    agent_2 = Agent(
+        name="Poem Translator Agent",
+        backstory="You are an expert translator especially skilled in Spanish",
+        task_description="Translate a poem into Spanish",
+        task_expected_output="Just output the translated poem and nothing else"
+    )
+
+    agent_3 = Agent(
+        name="Writer Agent",
+        backstory="You are an expert transcriber, that loves writing poems into txt files",
+        task_description="You'll receive a Spanish poem in your context. You need to write the poem into './poem.txt' file",
+        task_expected_output="A txt file containing the greek poem received from the context",
+        tools=write_str_to_txt,
+    )
+
+    agent_1 >> agent_2 >> agent_3
+```
+
+We can also plot the Crew, to see the DAG structure, like this:
+
+```python
+crew.plot()
+```
+
+For the previous Crew, you should get something like this:
+
+![alt text](img/dag.svg)
+
+To run the Crew, simply run:
+
+```python
+crew.run()
+```
+
+## Recommended Workflow
+
+This is **an educational project** and not an agentic framework.
+
+The reason I've decided to implement the 4 Agentic Patterns from scratch was to deeply understand their basics and also to teach them to anyone interested.
+
+Given this, this is my recommended learning workflow:
+
+1. Start with the YouTube video, ideally following my explanations with your own Jupyter Notebook.
+
+2. Play with the code in the Jupyter Notebook: make changes, modify the prompts, create new examples etc. Get comfortable with the pattern fundamentals and basic concepts.
+
+3. (Optional) Read through the library implementation of each pattern. This will require more effort and more Python knowledge, but if you take the time, I can assure you you'll benefit a lot from it.
+
+```mermaid
+flowchart TD;
+    Video --> Notebook;
+    Notebook --> Code
+    classDef centered text-align:center;
+```
+
+
 
 ## Star History
 
