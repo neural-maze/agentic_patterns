@@ -20,9 +20,14 @@
 
 - [2. The 4 Agentic Patterns](#the-4-agentic-patterns)
 
-- [3. Install & Usage](#install--usage)
-- [4. Recommended Workflow](#recommended-workflow)
-- [5. Star History](#star-history)
+- [3. Installation](#installation)
+- [4. Usage](#usage)
+  - [4.1 Using a Reflection Agent - Reflection Pattern](#using-a-reflection-agent---reflection-pattern)
+  - [4.2 Creating and Using Tools - Tool Use Pattern](#creating-and-using-tools---tool-use-pattern)
+  - [4.3 Reasoning with a ReAct Agent - Planning Pattern](#reasoning-with-a-react-agent---planning-pattern)
+  - [4.4 Defining and running a Crew of Agents - MultiAgent Pattern](#defining-and-running-a-crew-of-agents---multiagent-pattern)
+- [5. Recommended Workflow](#recommended-workflow)
+- [6. Star History](#star-history)
 
 
 ## Introduction
@@ -54,9 +59,11 @@ Want to see how this pattern is implemented? 💻
 
 Take a look at the YouTube video! 👇
 
-[![Watch the video](https://img.youtube.com/vi/0sAVI8bQdRc/0.jpg)](https://www.youtube.com/watch?v=0sAVI8bQdRc)
-
-
+<div align="center">
+  <a href="https://www.youtube.com/watch?v=0sAVI8bQdRc">
+    <img src="https://img.youtube.com/vi/0sAVI8bQdRc/0.jpg" alt="Watch the video" />
+  </a>
+</div>
 
 ---
 
@@ -86,6 +93,7 @@ Take a look at the YouTube video! 👇
     <img src="https://img.youtube.com/vi/ApoDzZP8_ck/0.jpg" alt="Watch the video" />
   </a>
 </div>
+
 ---
 
 ### Planning Pattern 🧠
@@ -108,8 +116,11 @@ Want to see how this pattern is implemented? 💻
 
 Take a look at the YouTube video! 👇
 
-[![Watch the video](https://img.youtube.com/vi/4xkC069wrw8/0.jpg)](https://www.youtube.com/watch?v=4xkC069wrw8)
-
+<div align="center">
+  <a href="https://www.youtube.com/watch?v=4xkC069wrw8">
+    <img src="https://img.youtube.com/vi/4xkC069wrw8/0.jpg" alt="Watch the video" />
+  </a>
+</div>
 
 ---
 
@@ -133,34 +144,45 @@ the `Crew`
 
 Take a look at the YouTube video! 👇
 
-[![Watch the video](https://img.youtube.com/vi/os22Q7nEXPA/0.jpg)](https://www.youtube.com/watch?v=os22Q7nEXPA)
+<div align="center">
+  <a href="https://www.youtube.com/watch?v=os22Q7nEXPA">
+    <img src="https://img.youtube.com/vi/os22Q7nEXPA/0.jpg" alt="Watch the video" />
+  </a>
+</div>
+
 ---
 
-## Install & Usage
+## Installation
 
 If you take a look at any of the notebooks in the [notebooks/](notebooks) folder you'll see some helper methods and classes being imported from this library: `agentic-patterns`.
 
 This is the library implemented in the [src/](src) folder, and contains a full implementation of the 4 patterns and related helper methods.
 
-To install this library, you have two options:
+To install this library, you have two options.
 
- 1. Use [Poetry](https://python-poetry.org/):
+ ### Option 1: Use [Poetry](https://python-poetry.org/):
 
 ```
 poetry install
 ```
 
-2. Use pip (I've created a [Python package in Pypi](https://pypi.org/project/agentic-patterns/))
+### Option 2: Install the PyPi library
 
 ```sh
 pip install -U agentic-patterns
 ```
 
+---
+
+## Usage
+
 Once you have the library installed, you can start playing with the 4 patterns implementation (I'll encourage you to take a look at the code, to fully understand what is happening under the  hood).
 
 Let's see an example of how to put the 4 patterns into practise.
 
-### Example of Reflection Pattern
+---
+
+### Using a Reflection Agent - Reflection Pattern
 
 Here is an example of how to use a Reflection Agent.
 
@@ -187,7 +209,7 @@ final_response = agent.run(
 print(final_response)
 ```
 
-### Example of Tool Pattern
+### Creating and Using Tools - Tool Use Pattern
 
 An example of how to create a custom tool and bind it to a Tool Agent.
 
@@ -252,7 +274,7 @@ output = tool_agent.run(user_msg="Tell me the top 5 Hacker News stories right no
 print(output)
 ```
 
-### Example of Planning Pattern
+### Reasoning with a ReAct Agent - Planning Pattern
 
 As a paradigmatic example of the Planning Pattern, `agentic-patterns` offers an implementation of a ReAct Agent.
 
@@ -317,7 +339,7 @@ agent = ReactAgent(tools=[sum_two_elements, multiply_two_elements, compute_log])
 agent.run(user_msg="I want to calculate the sum of 1234 and 5678 and multiply the result by 5. Then, I want to take the logarithm of this result")
 ```
 
-### Example of MultiAgent Pattern
+### Defining and running a Crew of Agents - MultiAgent Pattern
 
 For the Multiagent Pattern, I decided to use two [CrewAI](https://www.crewai.com/)'s abstractions: the Agent and the Crew.
 
@@ -381,11 +403,11 @@ The reason I've decided to implement the 4 Agentic Patterns from scratch was to 
 
 Given this, this is my recommended learning workflow:
 
-1. Start with the YouTube video, ideally following my explanations with your own Jupyter Notebook.
+1️⃣ Start with the YouTube video, ideally following my explanations with your own Jupyter Notebook.
 
-2. Play with the code in the Jupyter Notebook: make changes, modify the prompts, create new examples etc. Get comfortable with the pattern fundamentals and basic concepts.
+2️⃣ Play with the code in the Jupyter Notebook: make changes, modify the prompts, create new examples etc. Get comfortable with the pattern fundamentals and basic concepts.
 
-3. (Optional) Read through the library implementation of each pattern. This will require more effort and more Python knowledge, but if you take the time, I can assure you you'll benefit a lot from it.
+3️⃣ (Optional) Read through the library implementation of each pattern. This will require more effort and more Python knowledge, but if you take the time, I can assure you you'll benefit a lot from it.
 
 ```mermaid
 flowchart TD;
@@ -393,8 +415,6 @@ flowchart TD;
     Notebook --> Code
     classDef centered text-align:center;
 ```
-
-
 
 ## Star History
 
