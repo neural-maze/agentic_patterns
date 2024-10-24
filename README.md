@@ -21,13 +21,14 @@
 - [2. The 4 Agentic Patterns](#the-4-agentic-patterns)
 
 - [3. Installation](#installation)
-- [4. Usage](#usage)
-  - [4.1 Using a Reflection Agent - Reflection Pattern](#using-a-reflection-agent---reflection-pattern)
-  - [4.2 Creating and Using Tools - Tool Use Pattern](#creating-and-using-tools---tool-use-pattern)
-  - [4.3 Reasoning with a ReAct Agent - Planning Pattern](#reasoning-with-a-react-agent---planning-pattern)
-  - [4.4 Defining and running a Crew of Agents - MultiAgent Pattern](#defining-and-running-a-crew-of-agents---multiagent-pattern)
-- [5. Recommended Workflow](#recommended-workflow)
-- [6. Star History](#star-history)
+- [4. Groq API Key](#groq-api-key)
+- [5. Usage](#usage)
+  - [5.1 Using a Reflection Agent - Reflection Pattern](#using-a-reflection-agent---reflection-pattern)
+  - [5.2 Creating and Using Tools - Tool Use Pattern](#creating-and-using-tools---tool-use-pattern)
+  - [5.3 Reasoning with a ReAct Agent - Planning Pattern](#reasoning-with-a-react-agent---planning-pattern)
+  - [5.4 Defining and running a Crew of Agents - MultiAgent Pattern](#defining-and-running-a-crew-of-agents---multiagent-pattern)
+- [6. Recommended Workflow](#recommended-workflow)
+- [7. Star History](#star-history)
 
 
 ## Introduction
@@ -174,9 +175,19 @@ pip install -U agentic-patterns
 
 ---
 
+## Groq API Key
+
+This project works with [Groq](https://groq.com/) as the LLM provider, so you'll need to create an API Key in this platform.
+
+When you have your API Key copy and paste it in an `.env` file.
+
+The content of this `.env` file should match the structure of the `.env.example` I've created in the repo, but instead of an empty string, the `GROQ_API_KEY` var will contain your API Key.
+
+---
+
 ## Usage
 
-Once you have the library installed, you can start playing with the 4 patterns implementation (I'll encourage you to take a look at the code, to fully understand what is happening under the  hood).
+Once you have both library installed and the `.env` file created, you can start playing with the 4 patterns implementation (I'll encourage you to take a look at the code, to fully understand what is happening under the  hood).
 
 Let's see an example of how to put the 4 patterns into practise.
 
