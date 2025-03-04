@@ -64,7 +64,7 @@ class ReactAgent:
 
     Attributes:
         client (Groq): The Groq client used to handle model-based completions.
-        model (str): The name of the model used for generating responses. Default is "llama-3.1-70b-versatile".
+        model (str): The name of the model used for generating responses. Default is "llama-3.3-70b-versatile".
         tools (list[Tool]): A list of Tool instances available for execution.
         tools_dict (dict): A dictionary mapping tool names to their corresponding Tool instances.
     """
@@ -72,7 +72,7 @@ class ReactAgent:
     def __init__(
         self,
         tools: Tool | list[Tool],
-        model: str = "llama-3.1-70b-versatile",
+        model: str = "llama-3.3-70b-versatile",
         system_prompt: str = BASE_SYSTEM_PROMPT,
     ) -> None:
         self.client = Groq()

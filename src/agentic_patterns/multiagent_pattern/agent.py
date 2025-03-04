@@ -28,7 +28,7 @@ class Agent:
         task_description (str): A description of the task assigned to the agent.
         task_expected_output (str, optional): The expected format or content of the task output. Defaults to "".
         tools (list[Tool] | None, optional): A list of Tool instances available to the agent. Defaults to None.
-        llm (str, optional): The name of the language model to use. Defaults to "llama-3.1-70b-versatile".
+        llm (str, optional): The name of the language model to use. Defaults to "llama-3.3-70b-versatile".
     """
 
     def __init__(
@@ -38,7 +38,7 @@ class Agent:
         task_description: str,
         task_expected_output: str = "",
         tools: list[Tool] | None = None,
-        llm: str = "llama-3.1-70b-versatile",
+        llm: str = "llama-3.3-70b-versatile",
     ):
         self.name = name
         self.backstory = backstory

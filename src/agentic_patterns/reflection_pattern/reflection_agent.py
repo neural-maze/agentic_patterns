@@ -35,7 +35,7 @@ class ReflectionAgent:
         client (Groq): An instance of the Groq client to interact with the language model.
     """
 
-    def __init__(self, model: str = "llama-3.1-70b-versatile"):
+    def __init__(self, model: str = "llama-3.3-70b-versatile"):
         self.client = Groq()
         self.model = model
 
